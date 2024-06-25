@@ -1,9 +1,12 @@
 import express from "express";
 import cors from "cors";
 import router from "./router";
-
+import * as dotenv from "dotenv";
 import morgan from "morgan";
+import { protect } from "./modules/auth";
+import { createNewUser, singIn } from "./handlers/user";
 
+dotenv.config();
 const app = express();
 
 app.use(cors());
@@ -22,6 +25,8 @@ app.get("/", (req, res) => {
   res.json({ message: "Json message" });
 });
 
-app.use("/api", router);
+app.use("/api", protect, router);
+app.post("/signup", createNewUser);
+app.post("/signin", singIn);
 
 export default app;
