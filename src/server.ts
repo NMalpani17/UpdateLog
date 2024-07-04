@@ -14,19 +14,22 @@ app.use(morgan("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// app.use((req, res, next) => {
-//   res.status(401);
-//   res.send("Nope");
-// });
-
-app.get("/", (req, res) => {
-  console.log("Successful request");
-  res.status(200);
-  res.json({ message: "Json message" });
+app.get("/", (req, res, next) => {
+  res.json({ message: "hello" });
 });
 
 app.use("/api", protect, router);
 app.post("/signup", createNewUser);
 app.post("/signin", singIn);
+
+app.use((err, req, res, next) => {
+  if (err.type === "auth") {
+    res.status(401).json({ message: "Unauthorized" });
+  } else if (err.type === "input") {
+    res.status(400).json({ message: "Invalid Input" });
+  } else {
+    res.status(500).json({ message: "Server Error" });
+  }
+});
 
 export default app;

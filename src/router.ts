@@ -49,6 +49,7 @@ router.put(
   body("body").optional(),
   body("version").optional(),
   body("status").isIn(["IN_PROGRESS", "DELIVERED", "DEPRECATED"]),
+  handleInputErrors,
   updateUpdate
 );
 router.post(
@@ -56,6 +57,7 @@ router.post(
   body("title").exists().isString(),
   body("body").exists().isString(),
   body("productId").exists().isString(),
+  handleInputErrors,
   createUpdate
 );
 router.delete("/update/:id", deleteUpdate);
@@ -80,5 +82,10 @@ router.post(
   () => {}
 );
 router.delete("/updatepoint/:id", () => {});
+
+router.use((err, req, res, next) => {
+  console.log(err);
+  res.json({ messgage: "Route errors" });
+});
 
 export default router;
